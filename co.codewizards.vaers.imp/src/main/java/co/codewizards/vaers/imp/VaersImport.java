@@ -68,6 +68,7 @@ public class VaersImport {
 		} finally {
 			closeConnection();
 		}
+		System.out.println("All successfully done.");
 	}
 
 	protected void importVaersCsvFile() throws Exception {
