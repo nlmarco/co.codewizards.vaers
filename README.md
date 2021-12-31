@@ -14,3 +14,14 @@ Collection of VAERS-related tools. Currently, there's only one tool: The import-
 8. Run `VaersImport` again (i.e. repeat step 6) with the directory in which all the CSV-files are located. You can specify a parent-directory -- the program scans it recursively.
 9. Start pgAdmin or another SQL-query-tool for your SELECTs.
 10. Wait for a couple of hours. The import takes very long. You should see the progress in the text-output of the program and also you can already start querying the database. The INSERTs are done in individual transactions, thus you can already see the intermediate state while the import is still running.
+
+**Important:** The import performs INSERTs only. It does no SELECTs and no UPDATEs for the sake of a faster performance. In order to avoid duplicate data, it performs a `TRUNCATE TABLE ... RESTART IDENTITY` for all VAERS-tables at the beginning of each run.
+
+## Analysis of data
+
+There are 3 different tables:
+* `VAERSDATA`
+* `VAERSSYMPTOMS`
+* `VAERSVAX`
+
+Each of them has a `VAERS_ID` which specifies one single vaccination-adverse-reaction-event. The `VAERS_ID` is the primary key of the table `VAERSDATA`. But each of these events can comprise multiple vaccines, hence there's a 1-n-relation from `VAERSDATA` to `VAERSVAX`. Also, there is a 1-n-relation from `VAERSDATA` to `VAERSSYMPTOMS` as a multitude of symptoms may exist.
