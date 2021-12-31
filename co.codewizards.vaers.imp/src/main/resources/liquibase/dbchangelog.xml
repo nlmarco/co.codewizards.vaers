@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd
+      http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
+
+	<changeSet author="mn" id="2021-12-29.mn.001">
+		<createTable tableName="VAERSVAX">
+			<column autoIncrement="true" name="ID" type="bigint">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="VAERSVAX_PK" />
+			</column>
+			<column name="VAERS_ID" type="bigint" />
+			<column name="VAX_TYPE" type="varchar(30)" />
+			<column name="VAX_MANU" type="varchar(255)" />
+			<column name="VAX_LOT" type="varchar(30)" />
+			<column name="VAX_DOSE_SERIES" type="varchar(30)" />
+			<column name="VAX_ROUTE" type="varchar(10)" />
+			<column name="VAX_SITE" type="varchar(10)" />
+			<column name="VAX_NAME" type="varchar(255)" />
+		</createTable>
+		
+		<createIndex tableName="VAERSVAX" indexName="VAERSVAX_VAERS_ID">
+			<column name="VAERS_ID" />
+		</createIndex>
+
+		<createTable tableName="VAERSDATA">
+			<column autoIncrement="true" name="ID" type="bigint">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="VAERSDATA_PK" />
+			</column>
+			<column name="VAERS_ID" type="bigint" />
+			<column name="RECVDATE" type="date" />
+			<column name="STATE" type="varchar(2)" />
+			<column name="AGE_YRS" type="decimal" />
+			<column name="CAGE_YR" type="int" />
+			<column name="CAGE_MO" type="decimal" />
+			<column name="SEX" type="varchar(1)" />
+			<column name="RPT_DATE" type="date" />
+			<column name="SYMPTOM_TEXT" type="clob" />
+			<column name="DIED" type="varchar(1)" />
+			<column name="DATEDIED" type="date" />
+			<column name="L_THREAT" type="varchar(1)" />
+			<column name="ER_VISIT" type="varchar(1)" />
+			<column name="HOSPITAL" type="varchar(1)" />
+			<column name="HOSPDAYS" type="int" />
+			<column name="X_STAY" type="varchar(1)" />
+			<column name="DISABLE" type="varchar(1)" />
+			<column name="RECOVD" type="varchar(1)" />
+			<column name="VAX_DATE" type="date" />
+			<column name="ONSET_DATE" type="date" />
+			<column name="NUMDAYS" type="int" />
+			<column name="LAB_DATA" type="clob" />
+			<column name="V_ADMINBY" type="clob" />
+			<column name="V_FUNDBY" type="clob" />
+			<column name="OTHER_MEDS" type="clob" />
+			<column name="CUR_ILL" type="clob" />
+			<column name="HISTORY" type="clob" />
+			<column name="PRIOR_VAX" type="clob" />
+			<column name="SPLTTYPE" type="clob" />
+			<column name="FORM_VERS" type="int" />
+			<column name="TODAYS_DATE" type="clob" />
+			<column name="BIRTH_DEFECT" type="clob" />
+			<column name="OFC_VISIT" type="clob" />
+			<column name="ER_ED_VISIT" type="clob" />
+			<column name="ALLERGIES" type="clob" />
+		</createTable>
+		
+		<createIndex tableName="VAERSDATA" indexName="VAERSDATA_VAERS_ID">
+			<column name="VAERS_ID" />
+		</createIndex>
+
+		<createTable tableName="VAERSSYMPTOMS">
+			<column autoIncrement="true" name="ID" type="bigint">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="VAERSSYMPTOMS_PK" />
+			</column>
+			<column name="VAERS_ID" type="bigint" />
+			<column name="SYMPTOM1" type="varchar(255)" />
+			<column name="SYMPTOMVERSION1" type="varchar(20)" />
+			<column name="SYMPTOM2" type="varchar(255)" />
+			<column name="SYMPTOMVERSION2" type="varchar(20)" />
+			<column name="SYMPTOM3" type="varchar(255)" />
+			<column name="SYMPTOMVERSION3" type="varchar(20)" />
+			<column name="SYMPTOM4" type="varchar(255)" />
+			<column name="SYMPTOMVERSION4" type="varchar(20)" />
+			<column name="SYMPTOM5" type="varchar(255)" />
+			<column name="SYMPTOMVERSION5" type="varchar(20)" />
+		</createTable>
+				
+		<createIndex tableName="VAERSSYMPTOMS" indexName="VAERSSYMPTOMS_VAERS_ID">
+			<column name="VAERS_ID" />
+		</createIndex>
+	</changeSet>
+
+</databaseChangeLog>
