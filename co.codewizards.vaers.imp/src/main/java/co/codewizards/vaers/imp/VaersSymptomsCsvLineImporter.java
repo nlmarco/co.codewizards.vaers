@@ -51,17 +51,9 @@ public class VaersSymptomsCsvLineImporter extends VaersCsvLineImporterBase {
 		for (Symptom symptom : symptoms) {
 			index = 0;
 
-			// VAERS_ID
-			insertStatement.setObject(index + 1, vaersId);
-			++index;
-
-			// SYMPTOM
-			insertStatement.setObject(index + 1, symptom.symptom);
-			++index;
-
-			// SYMPTOMVERSION
-			insertStatement.setObject(index + 1, symptom.symptomVersion);
-			++index;
+			insertStatement.setObject(++index, vaersId);
+			insertStatement.setObject(++index, symptom.symptom);
+			insertStatement.setObject(++index, symptom.symptomVersion);
 
 			insertStatement.executeUpdate();
 		}
