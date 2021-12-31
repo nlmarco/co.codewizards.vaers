@@ -4,8 +4,8 @@ Collection of VAERS-related tools. Currently, there's only one tool: The import-
 
 ## co.codewizards.vaers.imp
 
-1. Download the VAERS-zip-file from https://vaers.hhs.gov/data.html -- it's large and the download takes a while. You can proceed with the next steps while the download is running.
-2. Clone this repository and set up your IDE, i.e. import this Maven-project (should be supported and easy with all major IDEs).
+1. [Download the VAERS-zip-file](https://vaers.hhs.gov/data.html) -- it's large and the download takes a while. You can proceed with the next steps while the download is running.
+2. Clone this repository and set up your IDE, i.e. import this Maven-project.
 3. Run the main-class `VaersImport` without any parameters. It creates the configuration-file: `~/.vaers/vaers.properties`
 4. Create an empty PostgreSQL-database for the import -- you may call it `vaers` ;-)
 5. Configure `~/.vaers/vaers.properties` to match your new database.
@@ -25,3 +25,23 @@ There are 3 different tables:
 * `VAERSVAX`
 
 Each of them has a `VAERS_ID` which specifies one single vaccination-adverse-reaction-event. The `VAERS_ID` is the primary key of the table `VAERSDATA`. But each of these events can comprise multiple vaccines, hence there's a 1-n-relation from `VAERSDATA` to `VAERSVAX`. Also, there is a 1-n-relation from `VAERSDATA` to `VAERSSYMPTOMS` as a multitude of symptoms may exist.
+
+### Example query: COVID19 vs. OTHER
+
+The following query compares the quantity of unique `VAERS_ID`-values registered for a "COVID19"-vaccination with all other vaccinations:
+
+```
+select v.vax_type_group, v.died, count(*) as "count"
+from (
+	select distinct
+	  case when vaersvax.vax_type = 'COVID19' then 'COVID19' else 'OTHER' end as vax_type_group,
+	  vaersdata.died, vaersdata.vaers_id
+	from vaersdata
+	inner join vaersvax on vaersvax.vaers_id = vaersdata.vaers_id
+) as v
+group by v.vax_type_group, v.died
+order by v.vax_type_group, v.died
+;
+```
+Since a single VAERS-event may have multiple rows in table `vaersvax`, we use the `distinct` to make sure we do not count it twice for the same `vax_type_group`. Note: The above query may still count one event twice, if it has two different `vax_type_group`-values associated.
+
