@@ -7,31 +7,11 @@
       http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
 
 	<changeSet author="mn" id="2021-12-29.mn.001">
-		<createTable tableName="VAERSVAX">
-			<column autoIncrement="true" name="ID" type="bigint">
-				<constraints nullable="false" primaryKey="true"
-					primaryKeyName="VAERSVAX_PK" />
-			</column>
-			<column name="VAERS_ID" type="bigint" />
-			<column name="VAX_TYPE" type="varchar(30)" />
-			<column name="VAX_MANU" type="varchar(255)" />
-			<column name="VAX_LOT" type="varchar(30)" />
-			<column name="VAX_DOSE_SERIES" type="varchar(30)" />
-			<column name="VAX_ROUTE" type="varchar(10)" />
-			<column name="VAX_SITE" type="varchar(10)" />
-			<column name="VAX_NAME" type="varchar(255)" />
-		</createTable>
-		
-		<createIndex tableName="VAERSVAX" indexName="VAERSVAX_VAERS_ID">
-			<column name="VAERS_ID" />
-		</createIndex>
-
 		<createTable tableName="VAERSDATA">
-			<column autoIncrement="true" name="ID" type="bigint">
+			<column autoIncrement="false" name="VAERS_ID" type="bigint">
 				<constraints nullable="false" primaryKey="true"
 					primaryKeyName="VAERSDATA_PK" />
 			</column>
-			<column name="VAERS_ID" type="bigint" />
 			<column name="RECVDATE" type="date" />
 			<column name="STATE" type="varchar(2)" />
 			<column name="AGE_YRS" type="decimal" />
@@ -67,8 +47,23 @@
 			<column name="ER_ED_VISIT" type="clob" />
 			<column name="ALLERGIES" type="clob" />
 		</createTable>
-		
-		<createIndex tableName="VAERSDATA" indexName="VAERSDATA_VAERS_ID">
+
+		<createTable tableName="VAERSVAX">
+			<column autoIncrement="true" name="ID" type="bigint">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="VAERSVAX_PK" />
+			</column>
+			<column name="VAERS_ID" type="bigint" />
+			<column name="VAX_TYPE" type="varchar(30)" />
+			<column name="VAX_MANU" type="varchar(255)" />
+			<column name="VAX_LOT" type="varchar(30)" />
+			<column name="VAX_DOSE_SERIES" type="varchar(30)" />
+			<column name="VAX_ROUTE" type="varchar(10)" />
+			<column name="VAX_SITE" type="varchar(10)" />
+			<column name="VAX_NAME" type="varchar(255)" />
+		</createTable>
+
+		<createIndex tableName="VAERSVAX" indexName="VAERSVAX_VAERS_ID">
 			<column name="VAERS_ID" />
 		</createIndex>
 
@@ -78,18 +73,10 @@
 					primaryKeyName="VAERSSYMPTOMS_PK" />
 			</column>
 			<column name="VAERS_ID" type="bigint" />
-			<column name="SYMPTOM1" type="varchar(255)" />
-			<column name="SYMPTOMVERSION1" type="varchar(20)" />
-			<column name="SYMPTOM2" type="varchar(255)" />
-			<column name="SYMPTOMVERSION2" type="varchar(20)" />
-			<column name="SYMPTOM3" type="varchar(255)" />
-			<column name="SYMPTOMVERSION3" type="varchar(20)" />
-			<column name="SYMPTOM4" type="varchar(255)" />
-			<column name="SYMPTOMVERSION4" type="varchar(20)" />
-			<column name="SYMPTOM5" type="varchar(255)" />
-			<column name="SYMPTOMVERSION5" type="varchar(20)" />
+			<column name="SYMPTOM" type="varchar(255)" />
+			<column name="SYMPTOMVERSION" type="varchar(20)" />
 		</createTable>
-				
+
 		<createIndex tableName="VAERSSYMPTOMS" indexName="VAERSSYMPTOMS_VAERS_ID">
 			<column name="VAERS_ID" />
 		</createIndex>

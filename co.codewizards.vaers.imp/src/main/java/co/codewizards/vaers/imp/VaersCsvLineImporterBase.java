@@ -171,10 +171,13 @@ public abstract class VaersCsvLineImporterBase implements VaersCsvLineImporter {
 	}
 
 	protected void checkHeaderLine() {
+		checkHeaderLine(getColumnNames());
+	}
+
+	protected void checkHeaderLine(String[] columnNames) {
 		if (getCsvLineIndex() != 0) {
 			throw new IllegalStateException("Current line is not the header-line!");
 		}
-		String[] columnNames = getColumnNames();
 		String[] csvLine = getCsvLine();
 		if (columnNames.length > csvLine.length) { // We allow more columns in the file to allow for newer versions with additional columns
 			throw new IllegalArgumentException(String.format("file='%s': The number of expected columns %d exceeds the number of columns in the file %d!",

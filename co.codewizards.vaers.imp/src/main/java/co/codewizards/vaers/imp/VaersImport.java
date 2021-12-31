@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,6 +169,21 @@ public class VaersImport {
 	protected void initDatabase() throws Exception {
 		initLiquibase();
 		openConnection();
+		truncateTables();
+	}
+
+	protected void truncateTables() throws Exception {
+		truncateTable("VAERSSYMPTOMS");
+		truncateTable("VAERSVAX");
+		truncateTable("VAERSDATA");
+	}
+
+	protected void truncateTable(String tableName) throws Exception {
+		requireNonNull(tableName, "tableName");
+		Connection connection = openConnection();
+		String sql = String.format("truncate table %s restart identity", tableName);
+		Statement statement = connection.createStatement();
+		statement.executeUpdate(sql);
 	}
 
 	protected void closeConnection() throws SQLException {
@@ -188,6 +204,7 @@ public class VaersImport {
 			vaersTable2VaersCsvLineImporter.clear();
 			connection = DriverManager.getConnection(config.getValue(ConfigKeyConst.DB_URL), config.getValue(ConfigKeyConst.DB_USER), config.getValue(ConfigKeyConst.DB_PASSWORD));
 		}
+		connection.setAutoCommit(true);
 		return connection;
 	}
 

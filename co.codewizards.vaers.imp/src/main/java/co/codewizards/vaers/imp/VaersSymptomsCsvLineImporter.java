@@ -1,10 +1,17 @@
 package co.codewizards.vaers.imp;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VaersSymptomsCsvLineImporter extends VaersCsvLineImporterBase {
 
 	public static final String[] COLUMN_NAMES = {
+			"VAERS_ID", "SYMPTOM", "SYMPTOMVERSION"
+	};
+
+	// The CSV has 5 symptoms per line, but in our DB we map this to 1 symptom per line.
+	public static final String[] CSV_COLUMN_NAMES = {
 			"VAERS_ID", "SYMPTOM1", "SYMPTOMVERSION1", "SYMPTOM2", "SYMPTOMVERSION2", "SYMPTOM3", "SYMPTOMVERSION3",
 			"SYMPTOM4", "SYMPTOMVERSION4", "SYMPTOM5", "SYMPTOMVERSION5"
 	};
@@ -22,57 +29,51 @@ public class VaersSymptomsCsvLineImporter extends VaersCsvLineImporterBase {
 	@Override
 	public void importCsvLine() throws SQLException {
 		if (getCsvLineIndex() == 0) {
-			checkHeaderLine();
+			checkHeaderLine(CSV_COLUMN_NAMES);
 			return;
 		}
 
-		connection.setAutoCommit(true);
+		List<Symptom> symptoms = new ArrayList<>();
+
 		int index = 0;
+		long vaersId = getCsvCellAsLong(index);
 
-		// VAERS_ID
-		insertStatement.setObject(index + 1, getCsvCellAsLong(index));
-		++index;
+		for (int symptomIndex = 1; symptomIndex <= 5; ++ symptomIndex) {
+			// SYMPTOM1 + SYMPTOMVERSION1 ... SYMPTOM5 + SYMPTOMVERSION5
+			Symptom symptom = new Symptom(getCsvCellAsString(++index), getCsvCellAsString(++index));
+			if (symptom.symptom != null && !symptom.symptom.isEmpty()) {
+				symptoms.add(symptom);
+			}
+		}
 
-		// SYMPTOM1
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+		connection.setAutoCommit(true);
 
-		// SYMPTOMVERSION1
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+		for (Symptom symptom : symptoms) {
+			index = 0;
 
-		// SYMPTOM2
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+			// VAERS_ID
+			insertStatement.setObject(index + 1, vaersId);
+			++index;
 
-		// SYMPTOMVERSION2
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+			// SYMPTOM
+			insertStatement.setObject(index + 1, symptom.symptom);
+			++index;
 
-		// SYMPTOM3
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+			// SYMPTOMVERSION
+			insertStatement.setObject(index + 1, symptom.symptomVersion);
+			++index;
 
-		// SYMPTOMVERSION3
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+			insertStatement.executeUpdate();
+		}
+	}
 
-		// SYMPTOM4
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
+	private static class Symptom {
+		public final String symptom;
+		public final String symptomVersion;
 
-		// SYMPTOMVERSION4
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
-
-		// SYMPTOM5
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
-
-		// SYMPTOMVERSION5
-		insertStatement.setObject(index + 1, getCsvCellAsString(index));
-		++index;
-
-		insertStatement.executeUpdate();
+		public Symptom(String symptom, String symptomVersion) {
+			this.symptom = symptom;
+			this.symptomVersion = symptomVersion;
+		}
 	}
 }
